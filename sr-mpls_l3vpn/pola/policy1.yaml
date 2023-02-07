@@ -1,0 +1,14 @@
+# policy1.yaml
+srPolicy:
+  name: "policy1"
+  pcepSessionAddr: "10.0.255.1"
+  srcAddr: "10.255.0.1"
+  dstAddr: "10.255.0.3"
+  color: 1
+  segmentList:
+    - sid: 16002
+      nai: "10.255.0.2"
+    - sid: 16004
+      nai: "10.255.0.4"
+    - sid: 16003
+      nai: "10.255.0.3"

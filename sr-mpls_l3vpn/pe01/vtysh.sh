@@ -1,0 +1,70 @@
+#!/bin/bash
+vtysh -c 'conf t' \
+-c 'log file /var/log/frr.log' \
+-c 'debug pathd pcep basic path message pceplib' \
+-c 'debug pathd mpls-te' \
+-c 'interface lo' \
+-c ' ip address 10.255.0.1/32' \
+-c ' ip ospf area 0.0.0.0' \
+-c 'exit' \
+-c 'interface eth1' \
+-c ' ip address 10.0.0.1/30' \
+-c ' ip ospf area 0.0.0.0' \
+-c 'exit' \
+-c 'interface eth2' \
+-c ' ip address 10.0.0.9/30' \
+-c ' ip ospf area 0.0.0.0' \
+-c 'exit' \
+-c 'interface eth3' \
+-c ' ip address 192.168.0.1/24' \
+-c 'exit' \
+-c 'interface eth4' \
+-c ' ip address 10.0.255.1/24' \
+-c 'exit' \
+-c 'router ospf' \
+-c ' ospf router-id 10.255.0.1' \
+-c ' router-info area 0.0.0.0' \
+-c ' passive-interface lo' \
+-c ' capability opaque' \
+-c ' mpls-te on' \
+-c ' mpls-te router-address 10.255.0.1' \
+-c ' segment-routing on' \
+-c ' segment-routing global-block 16000 19999' \
+-c ' segment-routing node-msd 8' \
+-c ' segment-routing prefix 10.255.0.1/32 index 1' \
+-c 'exit' \
+-c 'router bgp 65000' \
+-c ' neighbor 10.255.0.3 remote-as 65000' \
+-c ' neighbor 10.255.0.3 update-source 10.255.0.1' \
+-c ' address-family ipv4 vpn' \
+-c '  neighbor 10.255.0.3 activate' \
+-c ' exit-address-family' \
+-c 'exit' \
+-c 'router bgp 65000 vrf cust-a' \
+-c ' address-family ipv4 unicast' \
+-c '  redistribute connected' \
+-c '  label vpn export auto' \
+-c '  rd vpn export 65000:10' \
+-c '  rt vpn both 65000:10' \
+-c '  export vpn' \
+-c '  import vpn' \
+-c ' exit-address-family' \
+-c 'exit' \
+-c 'route-map color1 permit 1' \
+-c ' set sr-te color 1' \
+-c 'exit' \
+-c 'segment-routing' \
+-c ' traffic-eng' \
+-c '  pcep' \
+-c '   pce pola' \
+-c '    address ip 10.0.255.254' \
+-c '    source-address ip 10.0.255.1' \
+-c '    pce-initiated' \
+-c '    sr-draft07' \
+-c '   exit' \
+-c '   pcc' \
+-c '    peer pola' \
+-c '   exit' \
+-c '  exit' \
+-c ' exit' \
+-c 'exit'
