@@ -10,6 +10,7 @@ topology:
   nodes:
     xtc-pce:
       kind: xrd
+      startup-config: xtc-pce.cfg
     pola-pce:
       kind: linux
       image: ghcr.io/nttcom/pola:latest
@@ -18,10 +19,13 @@ topology:
         - ip -6 a add fc00::ffff/64 dev eth1
     pcc-rt01:
       kind: xrd
+      startup-config: pcc-rt01.cfg
     pcc-rt02:
       kind: xrd
+      startup-config: pcc-rt02.cfg
     pcc-rt03:
       kind: xrd
+      startup-config: pcc-rt03.cfg
     host01:
       kind: linux
       image: wbitt/network-multitool:latest
