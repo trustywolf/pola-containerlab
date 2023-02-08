@@ -13,7 +13,13 @@ topology:
       startup-config: xtc-pce.cfg
     pola-pce:
       kind: linux
-      image: ghcr.io/nttcom/pola:latest
+      #image: ghcr.io/nttcom/pola:latest
+      image: pola:latest
+      binds:
+        - gobgpd_cfg.yaml:/root/gobgpd_cfg.yaml
+        - polad_cfg.yaml:/root/polad_cfg.yaml
+        - policy_dynamic_rt01.yaml:/root/policy_dynamic_rt01.yaml
+        - policy_dynamic_rt02.yaml:/root/policy_dynamic_rt02.yaml
       exec:
         - ip a add 10.255.255.254/24 dev eth1
         - ip -6 a add fc00::ffff/64 dev eth1
