@@ -15,8 +15,8 @@ topology:
       kind: linux
       image: ghcr.io/nttcom/pola:latest
       exec:
-        - ip a add 10.255.255.254/24 dev eth1
-        - ip -6 a add fc00::ffff/64 dev eth1
+        - ip addr add 10.255.255.254/24 dev eth1
+        - ip -6 addr add fc00::ffff/64 dev eth1
     pcc-rt01:
       kind: crpd
       exec:

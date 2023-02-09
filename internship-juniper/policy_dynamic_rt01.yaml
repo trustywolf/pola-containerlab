@@ -1,0 +1,11 @@
+# policy_dynamic_rt01.yaml
+asn: 65001
+srPolicy:
+  #pcepSessionAddr: "10.255.255.1"
+  pcepSessionAddr: "fc00::1"
+  name: "dynamic_rt01"
+  srcRouterId: "0000.0aff.0001"
+  dstRouterId: "0000.0aff.0002"
+  color: 100
+  type: "dynamic"
+  metric: "te"
