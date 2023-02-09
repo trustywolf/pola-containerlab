@@ -17,7 +17,8 @@ topology:
       image: pola:latest
       binds:
         - gobgpd_cfg.yaml:/root/gobgpd_cfg.yaml
-        - polad_cfg.yaml:/root/polad_cfg.yaml
+        - polad.yaml:/root/polad.yaml
+        - polad_ted.yaml:/root/polad_ted.yaml
         - policy_dynamic_rt01.yaml:/root/policy_dynamic_rt01.yaml
         - policy_dynamic_rt02.yaml:/root/policy_dynamic_rt02.yaml
       exec:
