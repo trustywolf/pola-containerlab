@@ -2,65 +2,81 @@ name: internship
 
 topology:
   kinds:
-    crpd:
-      image: crpd:22.4R1.10
-      license: junos_sfnt.lic
     xrd:
       image: ios-xr/xrd-control-plane:7.8.1
-    srl:
-      image: ghcr.io/nokia/srlinux:22.11.1
+      env:
+        CLAB_MGMT_VRF: MGMT
+    vr-vmx:
+      image: vrnetlab/vr-vmx:22.4R1.10
+    vr-sros:
+      image: vrnetlab/vr-sros:22.7.R1
+      #type: sr-1s
+      license: sros-vsim.lic
 
   nodes:
-    pce:
+    xtc-pce:
+      kind: xrd
+      startup-config: xtc-pce.cfg
+    pola-pce:
       kind: linux
-      image: ghcr.io/nttcom/pola:latest
+      #image: ghcr.io/nttcom/pola:latest
+      image: pola:latest
+      binds:
+        - gobgpd_cfg.yaml:/root/gobgpd_cfg.yaml
+        - polad.yaml:/root/polad.yaml
+        - polad_ted.yaml:/root/polad_ted.yaml
+        - policy_dynamic_rt01.yaml:/root/policy_dynamic_rt01.yaml
+        - policy_dynamic_rt02.yaml:/root/policy_dynamic_rt02.yaml
       exec:
-        - ip addr add 10.255.255.254/24 dev eth1
+        - ip -4 addr add 10.255.255.254/24 dev eth1
         - ip -6 addr add fc00::ffff/64 dev eth1
     pcc-rt01:
-      kind: crpd
-      exec:
-        - ip a add 10.255.0.1/32 dev lo
-        - ip a add 10.1.2.1/30 dev eth1
-        - ip a add 10.1.3.1/30 dev eth2
-        - ip a add 10.255.255.1/24 dev eth3
-        - ip -6 a add fc00::1/64 dev eth3
-        - ip a add 192.168.1.254/24 dev eth4
+      kind: vr-vmx
+      startup-config: pcc-rt01.cfg
     pcc-rt02:
-      kind: xrd
+      kind: vr-sros
+      startup-config: pcc-rt02.cfg
     pcc-rt03:
-      kind: srl
+      kind: xrd
+      startup-config: pcc-rt03.cfg
     host01:
       kind: linux
       image: wbitt/network-multitool:latest
       exec:
-        - ip addr add 192.168.1.1/24 dev eth1
-        - ip route add 192.168.0.0/16 via 192.168.1.254
+        - ip -4 addr add 192.168.1.1/24 dev eth1
+        - ip -4 route add 192.168.0.0/16 via 192.168.1.254
+        - ip -6 addr add fd00:192:168:1::1/64 dev eth1
+        - ip -6 route add fd00:192:168::/48 via fd00:192:168:1::254
     host02:
       kind: linux
       image: wbitt/network-multitool:latest
       exec:
-        - ip addr add 192.168.2.1/24 dev eth1
-        - ip route add 192.168.0.0/16 via 192.168.2.254
+        - ip -4 addr add 192.168.2.1/24 dev eth1
+        - ip -4 route add 192.168.0.0/16 via 192.168.2.254
+        - ip -6 addr add fd00:192:168:2::1/64 dev eth1
+        - ip -6 route add fd00:192:168::/48 via fd00:192:168:2::254
     host03:
       kind: linux
       image: wbitt/network-multitool:latest
       exec:
-        - ip addr add 192.168.3.1/24 dev eth1
-        - ip route add 192.168.0.0/16 via 192.168.3.254
+        - ip -4 addr add 192.168.3.1/24 dev eth1
+        - ip -4 route add 192.168.0.0/16 via 192.168.3.254
+        - ip -6 addr add fd00:192:168:3::1/64 dev eth1
+        - ip -6 route add fd00:192:168::/48 via fd00:192:168:3::254
     switch:
       kind: bridge
 
   links:
-    - endpoints: ["pcc-rt01:eth1", "pcc-rt02:Gi0-0-0-0"]
-    - endpoints: ["pcc-rt01:eth2", "pcc-rt03:e1-1"]
-    - endpoints: ["pcc-rt02:Gi0-0-0-1", "pcc-rt03:e1-2"]
+    - endpoints: ["pcc-rt01:eth1", "pcc-rt02:eth1"]
+    - endpoints: ["pcc-rt01:eth2", "pcc-rt03:Gi0-0-0-0"]
+    - endpoints: ["pcc-rt02:eth2", "pcc-rt03:Gi0-0-0-1"]
     # switch
-    - endpoints: ["pce:eth1", "switch:eth1"]
-    - endpoints: ["pcc-rt01:eth3", "switch:eth2"]
-    - endpoints: ["pcc-rt02:Gi0-0-0-2", "switch:eth3"]
-    - endpoints: ["pcc-rt03:e1-3", "switch:eth4"]
+    - endpoints: ["xtc-pce:Gi0-0-0-0", "switch:eth1"]
+    - endpoints: ["pola-pce:eth1", "switch:eth2"]
+    - endpoints: ["pcc-rt01:eth3", "switch:eth3"]
+    - endpoints: ["pcc-rt02:eth3", "switch:eth4"]
+    - endpoints: ["pcc-rt03:Gi0-0-0-2", "switch:eth5"]
     # hosts
     - endpoints: ["pcc-rt01:eth4", "host01:eth1"]
-    - endpoints: ["pcc-rt02:Gi0-0-0-3", "host02:eth1"]
-    - endpoints: ["pcc-rt03:e1-4", "host03:eth1"]
+    - endpoints: ["pcc-rt02:eth4", "host02:eth1"]
+    - endpoints: ["pcc-rt03:Gi0-0-0-3", "host03:eth1"]
