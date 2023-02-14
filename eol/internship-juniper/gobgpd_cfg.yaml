@@ -1,0 +1,42 @@
+# gobgpd_cfg.yaml
+global:
+  config:
+    as: 65001
+    router-id: 10.255.255.254
+neighbors:
+  #  - config:
+  #      neighbor-address: fc00::1
+  #      peer-as: 65001
+  #    transport:
+  #      config:
+  #        local-address: fc00::ffff
+  #    afi-safis:
+  #      - config:
+  #          afi-safi-name: ls
+  #  - config:
+  #      neighbor-address: fc00::2
+  #      peer-as: 65001
+  #    transport:
+  #      config:
+  #        local-address: fc00::ffff
+  #    afi-safis:
+  #      - config:
+  #          afi-safi-name: ls
+  #  - config:
+  #      neighbor-address: fc00::3
+  #      peer-as: 65001
+  #    transport:
+  #      config:
+  #        local-address: fc00::ffff
+  #    afi-safis:
+  #      - config:
+  #          afi-safi-name: ls
+  - config:
+      neighbor-address: 10.255.255.1
+      peer-as: 65001
+    transport:
+      config:
+        local-address: 10.255.255.254
+    afi-safis:
+      - config:
+          afi-safi-name: ls
