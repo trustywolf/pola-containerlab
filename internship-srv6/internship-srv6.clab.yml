@@ -32,13 +32,13 @@ topology:
         - ip -6 addr add fc00::ffff/64 dev eth1
     pcc-rt01:
       kind: vr-vmx
-      #startup-config: pcc-rt01.cfg
+      startup-config: pcc-rt01.cfg
     pcc-rt02:
       kind: xrd
-      #startup-config: pcc-rt02.cfg
+      startup-config: pcc-rt02.cfg
     pcc-rt03:
       kind: vr-vmx
-      #startup-config: pcc-rt03.cfg
+      startup-config: pcc-rt03.cfg
     host01:
       kind: linux
       image: wbitt/network-multitool:latest
