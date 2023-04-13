@@ -19,8 +19,8 @@ topology:
       startup-config: xtc-pce.cfg
     pola-pce:
       kind: linux
-      #image: ghcr.io/nttcom/pola:latest
-      image: pola:latest
+      image: ghcr.io/nttcom/pola:latest
+      #image: pola:latest
       binds:
         - gobgpd_cfg.yaml:/root/gobgpd_cfg.yaml
         - polad.yaml:/root/polad.yaml
